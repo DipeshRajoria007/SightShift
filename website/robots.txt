@@ -1,0 +1,7 @@
+# Crawlers only read robots.txt at a host's root. While the site lives at
+# dipeshrajoria007.github.io/SightShift/ this file isn't consulted; it takes effect
+# if the site moves to its own domain.
+User-agent: *
+Allow: /
+
+Sitemap: https://dipeshrajoria007.github.io/SightShift/sitemap.xml
