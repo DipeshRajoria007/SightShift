@@ -1,0 +1,43 @@
+<!doctype html>
+<!-- Social preview card. Regenerate with: make og-image -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../website/assets/css/site.css">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body::after { display: none; }
+  .card { position: relative; width: 1200px; height: 630px; padding: 64px 72px; box-sizing: border-box;
+    background:
+      radial-gradient(700px 420px at 88% 0%, rgba(138,124,255,.22), transparent 65%),
+      radial-gradient(600px 400px at 0% 100%, rgba(94,230,216,.14), transparent 65%),
+      radial-gradient(circle at 1px 1px, rgba(236,239,246,.07) 1px, transparent 1.6px) 0 0 / 28px 28px,
+      #07080b; }
+  .card h1 { font-size: 96px; line-height: .95; max-width: 9.5ch; margin: 26px 0 0; }
+  .card .label { font-size: 17px; }
+  .card .brand { position: absolute; left: 72px; bottom: 58px; font-size: 40px; gap: 16px; }
+  .card .brand img { width: 52px; height: 52px; }
+  .card .foot { position: absolute; right: 72px; bottom: 66px; font-family: var(--font-mono); font-size: 18px; color: var(--muted); letter-spacing: .04em; }
+  .mini { position: absolute; right: 60px; top: 120px; width: 470px; height: 300px; perspective: 900px; }
+  .mini .scr { position: absolute; top: 60px; width: 150px; height: 100px; border-radius: 12px; border: 1.5px solid rgba(236,239,246,.18); background: linear-gradient(180deg,#1a1e28,#10131a); }
+  .mini .l { left: 0; transform: rotateY(24deg); }
+  .mini .c { left: 158px; top: 48px; width: 170px; height: 112px; border-color: #ffb547; box-shadow: 0 0 0 1px #ffb547, 0 0 40px -4px rgba(255,181,71,.6); }
+  .mini .r { left: 336px; transform: rotateY(-24deg); }
+  .mini .c::after { content: ""; position: absolute; left: 18px; top: 22px; width: 10px; height: 20px; background: #ffb547; }
+  .mini .c::before { content: ""; position: absolute; left: 36px; top: 26px; width: 90px; height: 6px; border-radius: 3px; background: rgba(236,239,246,.25); box-shadow: 0 16px 0 -0px rgba(236,239,246,.14), 0 32px 0 rgba(236,239,246,.14); }
+  .beam { position: absolute; left: 0; top: 0; width: 470px; height: 420px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <p class="label label--gaze"><span class="mark"></span>Free and open source for macOS</p>
+    <h1>Keyboard focus that follows your <em>gaze</em>.</h1>
+    <div class="mini">
+      <svg class="beam" viewBox="0 0 470 420"><defs><linearGradient id="g" x1="243" y1="420" x2="243" y2="104" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5ee6d8" stop-opacity="0"/><stop offset="1" stop-color="#5ee6d8" stop-opacity=".35"/></linearGradient></defs><path d="M205 420 L233 104 L253 104 L281 420Z" fill="url(#g)"/><circle cx="243" cy="104" r="14" fill="none" stroke="#5ee6d8" stroke-width="2"/><circle cx="243" cy="104" r="3" fill="#5ee6d8"/></svg>
+      <div class="scr l"></div><div class="scr c"></div><div class="scr r"></div>
+    </div>
+    <a class="brand"><img src="../website/assets/img/icon-512.png" alt="">SightShift</a>
+    <p class="foot">look · pause · type</p>
+  </div>
+</body>
+</html>

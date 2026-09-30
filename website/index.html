@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SightShift: keyboard focus that follows your gaze on Mac</title>
+<meta name="description" content="Free, open-source Mac app that moves keyboard focus to the screen, window or split pane you look at. On-device head tracking: no clicking, nothing uploaded.">
+<link rel="canonical" href="https://dipeshrajoria007.github.io/SightShift/">
+<meta name="theme-color" content="#07080b">
+<meta name="color-scheme" content="dark">
+<meta name="author" content="Dipesh Rajoria">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SightShift">
+<meta property="og:title" content="SightShift: keyboard focus that follows your gaze">
+<meta property="og:description" content="Look at a screen, window or split pane and start typing. Free, open-source head tracking for multi-monitor Macs, entirely on-device.">
+<meta property="og:url" content="https://dipeshrajoria007.github.io/SightShift/">
+<meta property="og:image" content="https://dipeshrajoria007.github.io/SightShift/assets/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SightShift: keyboard focus that follows your gaze. Three screens, with focus on the one being looked at.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SightShift: keyboard focus that follows your gaze">
+<meta name="twitter:description" content="Free, open-source Mac app: look at a screen, window or split pane and start typing.">
+<meta name="twitter:image" content="https://dipeshrajoria007.github.io/SightShift/assets/img/og-image.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon-64.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preload" href="assets/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/site.css">
+<script>document.documentElement.classList.add("js")</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://dipeshrajoria007.github.io/SightShift/#app",
+      "name": "SightShift",
+      "description": "A free, open-source macOS menu bar app that moves keyboard focus to the screen, window or split pane you're looking at, using on-device head tracking.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "macOS 14 or later",
+      "softwareVersion": "0.1.0",
+      "url": "https://dipeshrajoria007.github.io/SightShift/",
+      "image": "https://dipeshrajoria007.github.io/SightShift/assets/img/icon-512.png",
+      "screenshot": "https://dipeshrajoria007.github.io/SightShift/assets/img/og-image.png",
+      "license": "https://opensource.org/licenses/MIT",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": [
+        "Moves keyboard focus to the screen you face",
+        "Focuses the window or split pane you look at",
+        "Holds focus while you type or use the mouse",
+        "Hysteresis so looking at a bezel doesn't flip focus",
+        "Ignores poses aimed away from every screen",
+        "Learns from your clicks",
+        "Runs entirely on-device with Apple's Vision framework"
+      ],
+      "author": { "@type": "Person", "name": "Dipesh Rajoria", "url": "https://github.com/DipeshRajoria007" },
+      "sameAs": ["https://github.com/DipeshRajoria007/SightShift"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://dipeshrajoria007.github.io/SightShift/#website",
+      "url": "https://dipeshrajoria007.github.io/SightShift/",
+      "name": "SightShift",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is SightShift eye tracking or head tracking?", "acceptedAnswer": { "@type": "Answer", "text": "Mostly head tracking. Switching screens relies on which way your head is turned, which an ordinary webcam measures reliably. Eye direction adds finer detail for picking a window or split pane on the same screen." } },
+        { "@type": "Question", "name": "Does SightShift record or upload video?", "acceptedAnswer": { "@type": "Answer", "text": "No. Frames are analysed in memory by Apple's Vision framework and discarded. The app makes no network requests, has no account and collects no analytics." } },
+        { "@type": "Question", "name": "Does it work with a single display?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Switching screens needs two or more displays, but with one display SightShift focuses the window or split pane you look at." } },
+        { "@type": "Question", "name": "Which camera does SightShift use?", "acceptedAnswer": { "@type": "Answer", "text": "The built-in camera by default. You can pick any other camera in Settings; use one that faces you directly." } },
+        { "@type": "Question", "name": "What happens while I'm typing or using the mouse?", "acceptedAnswer": { "@type": "Answer", "text": "Focus holds still. It moves only once typing has paused (2 seconds by default) and the pointer has rested for 1.5 seconds. If you keep typing straight through a turn, SightShift assumes you're reading the other screen and stays put." } },
+        { "@type": "Question", "name": "Does SightShift click on things?", "acceptedAnswer": { "@type": "Answer", "text": "Focus changes go through macOS Accessibility, so normally nothing is clicked. A few terminals don't let other apps focus a split pane; for those, SightShift clicks the middle of the pane after checking that nothing covers it. You can turn that off, and editors are never clicked." } },
+        { "@type": "Question", "name": "How often do I need to calibrate?", "acceptedAnswer": { "@type": "Answer", "text": "Once per screen, about 20 seconds each, and again only after moving a monitor, the camera or your chair a lot. Your clicks keep refining the model in between." } },
+        { "@type": "Question", "name": "Why does SightShift need Accessibility permission?", "acceptedAnswer": { "@type": "Answer", "text": "To move keyboard focus between windows and panes, and to notice when you're typing or using the mouse so it can hold still." } },
+        { "@type": "Question", "name": "Is SightShift really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. SightShift is open source under the MIT license, with no paid tier, trial or account." } },
+        { "@type": "Question", "name": "How do I install SightShift?", "acceptedAnswer": { "@type": "Answer", "text": "Build it from source with one command: clone the repository from GitHub and run make install. You need macOS 14 or later and Xcode 16 or later." } },
+        { "@type": "Question", "name": "Which Macs are supported?", "acceptedAnswer": { "@type": "Answer", "text": "macOS 14 Sonoma or later, on Apple silicon and Intel Macs." } }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="container">
+    <a class="brand" href="./" aria-label="SightShift home"><img src="assets/img/icon-64.png" alt="" width="30" height="30">SightShift</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle><span></span><span class="visually-hidden">Menu</span></button>
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="guide/">Guide</a>
+      <a href="blog/">Blog</a>
+      <a class="btn btn--ghost btn--small" href="https://github.com/DipeshRajoria007/SightShift">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <div class="hero__top">
+        <div>
+          <p class="label label--gaze"><span class="mark" aria-hidden="true"></span>Free and open source for macOS</p>
+          <h1 style="margin-top:22px"><span class="hero__title-line">Keyboard focus</span> <span class="hero__title-line">that follows</span> <span class="hero__title-line">your <em>gaze</em>.</span></h1>
+          <p class="hero__lede">Look at a screen, a window or a split pane and just start typing. SightShift moves keyboard focus there for you: no clicking first, no <span class="nowrap"><kbd>⌘</kbd><kbd>Tab</kbd></span>, no typing into the wrong window.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="https://github.com/DipeshRajoria007/SightShift">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              Get it free on GitHub
+            </a>
+            <a class="btn btn--ghost" href="#demo">Try the live demo</a>
+          </div>
+          <p class="hero__meta">macOS 14+ · Apple silicon &amp; Intel · MIT license · runs entirely on your Mac</p>
+        </div>
+        <dl class="specs" aria-label="At a glance">
+          <div class="spec"><dt>Switches after</dt><dd>300<small>ms</small></dd></div>
+          <div class="spec"><dt>Camera</dt><dd>720p<small>≤ 15 fps</small></dd></div>
+          <div class="spec"><dt>Leaves your Mac</dt><dd>0<small>bytes</small></dd></div>
+        </dl>
+      </div>
+
+      <section class="demo" id="demo" aria-labelledby="demo-title">
+        <h2 id="demo-title" class="visually-hidden">Interactive demo</h2>
+        <div class="stage-frame">
+          <div class="stage" data-demo tabindex="0" role="application" aria-roledescription="interactive demo" aria-label="SightShift demo: three screens on a desk. Move the pointer over a screen, or press the left and right arrow keys, to look at it. Type to send keystrokes to the focused window." aria-describedby="demo-help">
+            <div class="stage__wall"></div>
+            <div class="rig" aria-hidden="true">
+              <div class="monitor monitor--left">
+                <div class="screen">
+                  <div class="menubar"><i class="apple"></i><b>Terminal</b><span>Shell</span><span>Edit</span><span>View</span><span class="clock">9:41</span></div>
+                  <div class="desktop">
+                    <div class="target" data-target="terminal" data-name="Terminal">
+                      <div class="target__bar"><i></i><i></i><i></i><span>zsh — ~/code/app</span></div>
+                      <div class="target__body" data-body>
+                        <div class="ln"><span class="prompt">~/code/app ❯</span> git pull</div>
+                        <div class="ln dim">Already up to date.</div>
+                        <div class="ln"><span class="prompt">~/code/app ❯</span> <span class="typed" data-typed></span><span class="caret"></span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="monitor monitor--center">
+                <div class="screen">
+                  <div class="menubar"><i class="apple"></i><b>Editor</b><span>File</span><span>Edit</span><span>Selection</span><span class="clock">9:41</span></div>
+                  <div class="desktop">
+                    <div class="target" data-target="editor-left" data-name="Editor · left pane">
+                      <div class="target__bar"><i></i><i></i><i></i><span>gaze.ts</span></div>
+                      <div class="target__body" data-body>
+                        <div class="ln"><span class="dim">1 </span> <span class="kw">import</span> { lookAt } <span class="kw">from</span> <span class="str">"./eyes"</span></div>
+                        <div class="ln"><span class="dim">2 </span></div>
+                        <div class="ln"><span class="dim">3 </span> <span class="kw">export function</span> <span class="fn">follow</span>(gaze) {</div>
+                        <div class="ln"><span class="dim">4 </span>   <span class="kw">const</span> screen = <span class="fn">lookAt</span>(gaze)</div>
+                        <div class="ln"><span class="dim">5 </span>   <span class="kw">return</span> screen.lastWindow</div>
+                        <div class="ln"><span class="dim">6 </span> }</div>
+                        <div class="ln"><span class="dim">7 </span> <span class="typed" data-typed></span><span class="caret"></span></div>
+                      </div>
+                    </div>
+                    <div class="target" data-target="editor-right" data-name="Editor · right pane">
+                      <div class="target__bar"><i></i><i></i><i></i><span>hold.ts</span></div>
+                      <div class="target__body" data-body>
+                        <div class="ln"><span class="dim">1 </span> <span class="dim">// wait while typing</span></div>
+                        <div class="ln"><span class="dim">2 </span> <span class="kw">if</span> (typing) <span class="kw">return</span></div>
+                        <div class="ln"><span class="dim">3 </span> <span class="kw">if</span> (mouse) <span class="kw">return</span></div>
+                        <div class="ln"><span class="dim">4 </span> <span class="fn">focus</span>(target)</div>
+                        <div class="ln"><span class="dim">5 </span> <span class="typed" data-typed></span><span class="caret"></span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="monitor monitor--right">
+                <div class="screen">
+                  <div class="menubar"><i class="apple"></i><b>Browser</b><span>File</span><span>History</span><span class="clock">9:41</span></div>
+                  <div class="desktop">
+                    <div class="target" data-target="docs" data-name="Docs">
+                      <div class="target__bar"><i></i><i></i><i></i><span>Docs — Keyboard focus</span></div>
+                      <div class="urlbar">docs.example/keyboard-focus</div>
+                      <div class="target__body" data-body>
+                        <div class="doc-title">Keyboard focus</div>
+                        <span class="skeleton" style="width:92%"></span>
+                        <span class="skeleton" style="width:78%"></span>
+                        <span class="skeleton" style="width:85%"></span>
+                        <span class="skeleton" style="width:60%"></span>
+                        <div class="searchbox">Search <span class="typed" data-typed></span><span class="caret"></span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="desk" aria-hidden="true"><div class="keyboard" data-keyboard></div><div class="phone" data-away></div></div>
+            <svg class="beam" data-beam aria-hidden="true">
+              <defs>
+                <linearGradient id="beam-gradient" gradientUnits="userSpaceOnUse" data-beam-gradient>
+                  <stop offset="0" stop-color="#5ee6d8" stop-opacity="0"/>
+                  <stop offset="1" stop-color="#5ee6d8" stop-opacity="0.2"/>
+                </linearGradient>
+                <radialGradient id="beam-glow">
+                  <stop offset="0" stop-color="#5ee6d8" stop-opacity="0.28"/>
+                  <stop offset="1" stop-color="#5ee6d8" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <path data-beam-path fill="url(#beam-gradient)"/>
+              <circle data-beam-glow r="60" fill="url(#beam-glow)"/>
+            </svg>
+            <div class="reticle" data-reticle aria-hidden="true">
+              <svg viewBox="0 0 44 44">
+                <circle class="ring" cx="22" cy="22" r="12"/>
+                <circle class="dwell" cx="22" cy="22" r="16.5" pathLength="100" stroke-dasharray="0 100" data-dwell/>
+                <line class="tick" x1="22" y1="1" x2="22" y2="7"/>
+                <line class="tick" x1="22" y1="37" x2="22" y2="43"/>
+                <line class="tick" x1="1" y1="22" x2="7" y2="22"/>
+                <line class="tick" x1="37" y1="22" x2="43" y2="22"/>
+                <circle class="dot" cx="22" cy="22" r="2"/>
+              </svg>
+            </div>
+            <dl class="hud" aria-hidden="true">
+              <dt>GAZE</dt><dd class="gaze" data-hud-gaze>—</dd>
+              <dt>FOCUS</dt><dd class="focus" data-hud-focus>—</dd>
+              <dt>HOLD</dt><dd data-hud-hold>—</dd>
+            </dl>
+            <div class="mode" data-mode aria-hidden="true">Tour</div>
+            <ol class="log" data-log aria-live="off"></ol>
+            <p class="hint" data-hint aria-hidden="true"><b>Move your pointer</b> over the screens to look around.<br><b>Type</b> to see where your keystrokes go.</p>
+            <div class="cam" data-cam aria-hidden="true"><video data-video playsinline muted></video><span>On-device · not recorded</span></div>
+            <div class="calib-dot" data-calib-dot aria-hidden="true"></div>
+            <div class="prompt-card" data-prompt role="status"></div>
+          </div>
+        </div>
+        <div class="controls">
+          <label class="control">Delay
+            <input type="range" min="100" max="1000" step="50" value="300" data-delay aria-label="Delay before focus moves, in milliseconds">
+            <output data-delay-out>300 ms</output>
+          </label>
+          <label class="control"><span class="switch"><input type="checkbox" checked data-typing-guard><span></span></span>Wait while I'm typing</label>
+          <span class="spacer"></span>
+          <button class="btn btn--ghost btn--small" type="button" data-camera>Use my camera</button>
+          <button class="btn btn--ghost btn--small" type="button" data-replay>Replay tour</button>
+          <p class="camera-note" id="demo-help" data-camera-note>This is a simulation of the Mac app. Camera mode runs a face tracker right in your browser (MediaPipe): video never leaves your device, and the first start downloads about 15 MB.</p>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="container">
+      <div class="section__head reveal">
+        <div>
+          <span class="label section__index"><span class="mark" aria-hidden="true"></span>01 — How it works</span>
+          <h2>Look. <em>Pause.</em> Type.</h2>
+        </div>
+        <p>Your eyes already know where you want to type next. SightShift reads which way your head is turned through the webcam and moves keyboard focus to match, entirely on your Mac.</p>
+      </div>
+      <div class="steps reveal-stagger">
+        <div class="step">
+          <span class="step__num">STEP 01</span>
+          <h3>See</h3>
+          <p>About fifteen times a second, Apple's Vision framework finds your face and measures which way it's turned, plus where your eyes point. Each frame is thrown away right after.</p>
+        </div>
+        <div class="step">
+          <span class="step__num">STEP 02</span>
+          <h3>Match</h3>
+          <p>A short calibration, following a dot for about 20 seconds per screen, teaches SightShift where each display sits relative to you. Every click refines it from then on.</p>
+        </div>
+        <div class="step">
+          <span class="step__num">STEP 03</span>
+          <h3>Type</h3>
+          <p>Rest your gaze on a screen for 300 ms and the window you last used there has focus, pointer included. On one display, it focuses the window or split pane you look at.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="features">
+    <div class="container">
+      <div class="section__head reveal">
+        <div>
+          <span class="label section__index"><span class="mark" aria-hidden="true"></span>02 — Features</span>
+          <h2>Quick to follow, <em>calm</em> by design.</h2>
+        </div>
+        <p>A focus switcher is only useful if you can forget it's there. SightShift ignores glances, holds still while you work and never fights you for the mouse.</p>
+      </div>
+      <div class="bento reveal-stagger">
+        <article class="card card--wide">
+          <div class="viz" aria-hidden="true"><div class="viz-screens"><i></i><i></i><i></i></div></div>
+          <h3>Every screen, any layout</h3>
+          <p>Side by side, stacked, or a laptop under a monitor. Turn toward a screen and the window you last used there gets focus. The pointer comes along too, so scrolling lands where you're looking.</p>
+        </article>
+        <article class="card card--mid">
+          <div class="viz" aria-hidden="true"><div class="viz-panes"><i></i><i></i><i></i></div></div>
+          <h3>Windows and split panes</h3>
+          <p>One display is enough. SightShift focuses the window you look at, and the split pane inside terminals and editors.</p>
+        </article>
+        <article class="card">
+          <div class="viz" aria-hidden="true"><div class="viz-typing"><kbd>t</kbd><kbd>y</kbd><kbd>p</kbd><kbd>e</kbd><em>hold</em></div></div>
+          <h3>Holds still while you work</h3>
+          <p>Focus waits until typing pauses and the mouse rests. Keep typing while you read another screen and it stays where you are.</p>
+        </article>
+        <article class="card">
+          <div class="viz" aria-hidden="true"><div class="viz-band"><b></b><s></s></div></div>
+          <h3>No bezel ping-pong</h3>
+          <p>Going back to a screen needs a slightly bigger turn than going there, so a gaze resting on the gap between monitors can't flip focus back and forth.</p>
+        </article>
+        <article class="card">
+          <div class="viz" aria-hidden="true"><div class="viz-phone"><i></i>ignored</div></div>
+          <h3>Ignores your phone</h3>
+          <p>Poses aimed away from every screen, at a phone, a notebook or the ceiling, are simply ignored.</p>
+        </article>
+        <article class="card card--wide">
+          <div class="viz" aria-hidden="true"><div class="viz-clicks"><i></i><i></i><i></i><i></i><i></i></div></div>
+          <h3>Learns from every click</h3>
+          <p>You look where you click, so each click teaches SightShift a little more. It keeps up when you sit closer, lean back or shift to one side, and tells you if it ever needs a recalibration.</p>
+        </article>
+        <article class="card card--mid">
+          <div class="viz" aria-hidden="true"><div class="viz-typing"><kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>G</kbd></div></div>
+          <h3>Pauses when you do</h3>
+          <p>Pause and resume with one shortcut. SightShift also pauses by itself, camera off, whenever your Mac locks or sleeps.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="apps">
+    <div class="container">
+      <div class="section__head reveal">
+        <div>
+          <span class="label section__index"><span class="mark" aria-hidden="true"></span>03 — Works with</span>
+          <h2>Your terminals, your <em>editors</em>, everything else.</h2>
+        </div>
+        <p>Window focus works with every Mac app. Split-pane focus works wherever an app exposes its panes to macOS Accessibility.</p>
+      </div>
+      <div class="apps reveal-stagger">
+        <div class="apps__group">
+          <h3>Split panes</h3>
+          <ul class="chips"><li>iTerm2</li><li>Terminal</li><li>Ghostty</li><li>cmux</li><li>Xcode</li><li>JetBrains IDEs</li><li>Android Studio</li></ul>
+          <p>Focus moves through Accessibility; a terminal that won't accept it gets a click in the middle of the pane.</p>
+        </div>
+        <div class="apps__group">
+          <h3>Split panes, opt-in</h3>
+          <ul class="chips"><li>VS Code</li><li>Cursor</li><li>Windsurf</li><li>VSCodium</li><li>Hyper</li></ul>
+          <p>Electron apps only reveal their panes when asked, and asking can switch them into screen reader mode, so this one is your call.</p>
+        </div>
+        <div class="apps__group">
+          <h3>Window focus</h3>
+          <ul class="chips"><li>Any app</li><li>kitty</li><li>WezTerm</li><li>Warp</li><li>Zed</li><li>Sublime Text</li></ul>
+          <p>Apps that draw their own panes without accessibility information still get window focus. tmux panes need the tmux keys.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="privacy">
+    <div class="container">
+      <div class="section__head reveal">
+        <div>
+          <span class="label section__index"><span class="mark" aria-hidden="true"></span>04 — Privacy</span>
+          <h2>Private by <em>construction</em>.</h2>
+        </div>
+        <p>A camera pointed at your face deserves a high bar. SightShift never records and never uploads. It's open source, so you can check that for yourself.</p>
+      </div>
+      <div class="pipeline reveal-stagger" aria-label="What happens to each camera frame">
+        <div class="node"><div class="node__box"><b>Camera</b>720p, at most 15 frames a second</div></div>
+        <div class="node"><div class="node__box"><b>Apple Vision</b>finds your face and landmarks, on your Mac</div></div>
+        <div class="node"><div class="node__box"><b>Ten numbers</b>head yaw and pitch, eye direction, face position</div></div>
+        <div class="node node--end"><div class="node__box"><b>Focus decision</b>and the frame is discarded</div></div>
+      </div>
+      <ul class="promises reveal-stagger">
+        <li><div><strong>No recording</strong><span>Frames live in memory for a single analysis and are never written to disk.</span></div></li>
+        <li><div><strong>No network</strong><span>The app makes no network requests at all.</span></div></li>
+        <li><div><strong>No account, no analytics</strong><span>Nothing to sign up for, nothing counting you.</span></div></li>
+        <li class="yes"><div><strong>Camera off when you're away</strong><span>Paused, locked or asleep means the camera is off.</span></div></li>
+        <li class="yes"><div><strong>Calibration stays on your Mac</strong><span>Saved as numbers in Application Support. Delete it any time.</span></div></li>
+        <li class="yes"><div><strong>Open source</strong><span>Every line is on GitHub under the MIT license. <a href="privacy/">Read the privacy policy</a>.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="free">
+    <div class="container">
+      <div class="price reveal">
+        <div>
+          <span class="label label--focus"><span class="mark" aria-hidden="true"></span>05 — Price</span>
+          <p class="price__amount">$0<em>forever</em></p>
+        </div>
+        <div>
+          <h2 style="font-size:clamp(2.2rem,4.4vw,3.4rem)">No trial. No tiers. <em>No catch.</em></h2>
+          <ul>
+            <li>MIT licensed: use it, fork it, ship it</li>
+            <li>No account and no sign-up</li>
+            <li>No telemetry, ads or upsells</li>
+            <li>Every feature, for everyone</li>
+          </ul>
+          <a class="btn btn--primary" href="https://github.com/DipeshRajoria007/SightShift">Get SightShift on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="install">
+    <div class="container">
+      <div class="section__head reveal">
+        <div>
+          <span class="label section__index"><span class="mark" aria-hidden="true"></span>06 — Install</span>
+          <h2>Set up in about <em>two minutes</em>.</h2>
+        </div>
+        <p>SightShift builds from source with one command. Then a short setup guide walks you through the permissions and calibration.</p>
+      </div>
+      <div class="install">
+        <ol class="reveal-stagger">
+          <li><div><strong>Get the code</strong><span>Clone the repository, or download it as a ZIP from GitHub.</span></div></li>
+          <li><div><strong>Build and install</strong><span><code>make install</code> builds the app, signs it locally and copies it to Applications.</span></div></li>
+          <li><div><strong>Allow the camera and Accessibility</strong><span>The setup window explains both and opens the right settings.</span></div></li>
+          <li><div><strong>Calibrate</strong><span>Follow a dot around each screen, about 20 seconds per screen. Then just look and type.</span></div></li>
+        </ol>
+        <div class="reveal">
+          <div class="terminal">
+            <div class="terminal__bar"><i></i><i></i><i></i><span>Terminal</span><button class="btn btn--ghost btn--small" type="button" data-copy="git clone https://github.com/DipeshRajoria007/SightShift.git&#10;cd SightShift&#10;make install">Copy</button></div>
+<pre><code><span class="comment"># macOS 14+ and Xcode 16+</span>
+<span class="prompt">$ </span>git clone https://github.com/DipeshRajoria007/SightShift.git
+<span class="prompt">$ </span>cd SightShift
+<span class="prompt">$ </span>make install</code></pre>
+          </div>
+          <p class="requirements">Needs macOS 14 Sonoma or later, Xcode 16 or later, and a camera that faces you. New to it? Read the <a href="guide/">setup guide</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="faq">
+    <div class="container faq">
+      <div class="faq__head reveal">
+        <span class="label section__index"><span class="mark" aria-hidden="true"></span>07 — Questions</span>
+        <h2>Good <em>questions</em>.</h2>
+        <p>Something missing? <a href="https://github.com/DipeshRajoria007/SightShift/issues">Open an issue on GitHub</a>.</p>
+      </div>
+      <div class="reveal">
+        <details>
+          <summary>Is it eye tracking or head tracking?</summary>
+          <div class="answer"><p>Mostly head tracking. Switching screens relies on which way your head is turned, which an ordinary webcam measures reliably. Eye direction adds finer detail for picking a window or split pane on the same screen.</p></div>
+        </details>
+        <details>
+          <summary>Does SightShift record or upload video?</summary>
+          <div class="answer"><p>No. Frames are analysed in memory by Apple's Vision framework and discarded. The app makes no network requests, has no account and collects no analytics.</p></div>
+        </details>
+        <details>
+          <summary>Does it work with a single display?</summary>
+          <div class="answer"><p>Yes. Switching screens needs two or more displays, but with one display SightShift focuses the window or split pane you look at.</p></div>
+        </details>
+        <details>
+          <summary>Which camera does it use?</summary>
+          <div class="answer"><p>The built-in camera by default. You can pick any other camera in Settings; use one that faces you directly.</p></div>
+        </details>
+        <details>
+          <summary>What happens while I'm typing or using the mouse?</summary>
+          <div class="answer"><p>Focus holds still. It moves only once typing has paused (2 seconds by default) and the pointer has rested for 1.5 seconds. If you keep typing straight through a turn, SightShift assumes you're reading the other screen and stays put.</p></div>
+        </details>
+        <details>
+          <summary>Does it click on things?</summary>
+          <div class="answer"><p>Focus changes go through macOS Accessibility, so normally nothing is clicked. A few terminals don't let other apps focus a split pane; for those, SightShift clicks the middle of the pane after checking that nothing covers it. You can turn that off, and editors are never clicked.</p></div>
+        </details>
+        <details>
+          <summary>How often do I need to calibrate?</summary>
+          <div class="answer"><p>Once per screen, about 20 seconds each, and again only after moving a monitor, the camera or your chair a lot. Your clicks keep refining the model in between.</p></div>
+        </details>
+        <details>
+          <summary>Why does it need Accessibility permission?</summary>
+          <div class="answer"><p>To move keyboard focus between windows and panes, and to notice when you're typing or using the mouse so it can hold still.</p></div>
+        </details>
+        <details>
+          <summary>Is it really free?</summary>
+          <div class="answer"><p>Yes. SightShift is open source under the MIT license, with no paid tier, trial or account.</p></div>
+        </details>
+        <details>
+          <summary>How do I install it?</summary>
+          <div class="answer"><p>Build it from source with one command: clone the repository from GitHub and run <code>make install</code>. You need macOS 14 or later and Xcode 16 or later. The <a href="guide/">setup guide</a> covers the rest.</p></div>
+        </details>
+        <details>
+          <summary>Which Macs are supported?</summary>
+          <div class="answer"><p>macOS 14 Sonoma or later, on Apple silicon and Intel Macs.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container reveal">
+      <h2>Stop clicking <em>before</em> you type.</h2>
+      <p>Free, private and open source. Your keyboard will be right where you're looking.</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="https://github.com/DipeshRajoria007/SightShift">Get it free on GitHub</a>
+        <a class="btn btn--ghost" href="guide/">Read the setup guide</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-brand">
+      <a class="brand" href="./"><img src="assets/img/icon-64.png" alt="" width="30" height="30">SightShift</a>
+      <p>Keyboard focus that follows your gaze. Built on a Mac, for Macs.</p>
+    </div>
+    <div>
+      <h2>Product</h2>
+      <ul>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="#install">Install</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Resources</h2>
+      <ul>
+        <li><a href="guide/">Setup guide</a></li>
+        <li><a href="blog/">Blog</a></li>
+        <li><a href="privacy/">Privacy policy</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Project</h2>
+      <ul>
+        <li><a href="https://github.com/DipeshRajoria007/SightShift">Source code</a></li>
+        <li><a href="https://github.com/DipeshRajoria007/SightShift/issues">Issues</a></li>
+        <li><a href="https://github.com/DipeshRajoria007/SightShift/blob/main/LICENSE">MIT license</a></li>
+      </ul>
+    </div>
+    <div class="footer-legal">
+      <span>© 2026 SightShift contributors · MIT License</span>
+      <span>Not affiliated with Apple. Mac and macOS are trademarks of Apple Inc.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js" defer></script>
+<script type="module" src="assets/js/demo.js"></script>
+</body>
+</html>

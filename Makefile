@@ -7,7 +7,7 @@ DERIVED     := $(BUILD_DIR)/DerivedData
 APP         := $(BUILD_DIR)/$(APP_NAME).app
 INSTALL_DIR ?= /Applications
 
-.PHONY: all build run install test project icon reset-permissions clean
+.PHONY: all build run install test project icon site og-image serve-site reset-permissions clean
 
 all: build
 
@@ -45,6 +45,21 @@ test:
 ## Regenerate the app icon.
 icon:
 	swift scripts/make-icon.swift App/Resources/Assets.xcassets/AppIcon.appiconset
+
+## Regenerate the website's guide, privacy and blog pages from scripts/site_pages.py.
+site:
+	python3 scripts/site_pages.py
+
+## Render the website's social preview card with Google Chrome.
+og-image:
+	"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+		--window-size=1200,630 --screenshot=website/assets/img/og-image.png "file://$(CURDIR)/scripts/og-image.html"
+
+## Preview the website at http://localhost:8000/SightShift/ (the same path as on GitHub Pages).
+serve-site:
+	@mkdir -p build/site && ln -sfn "$(CURDIR)/website" build/site/SightShift
+	@echo "Serving http://localhost:8000/SightShift/"
+	cd build/site && python3 -m http.server 8000
 
 ## Make macOS forget SightShift's Camera and Accessibility permissions.
 reset-permissions:
